@@ -1,0 +1,52 @@
+## The basic model
+CLPM <- '
+  # MODEL
+  TOTA22 ~ AR12*TOTA16+CL21*SMFQ16
+  SMFQ22 ~ AR21*SMFQ16+CL12*TOTA16
+  TOTA26 ~ AR23*TOTA22+CL32*SMFQ22
+  SMFQ25 ~ AR32*SMFQ22+CL23*TOTA22
+ 
+#COV
+  TOTA16~~SMFQ16
+  TOTA22~~SMFQ22
+  TOTA26~~SMFQ25
+'
+## RI-CLPM
+RICLPM <- '
+  # Create between components (random intercepts)
+  RIx =~ 1*TV16 + 1*TV22 + 1*TV26
+  RIy =~ 1*SMFQ16 + 1*SMFQ22 + 1*SMFQ25
+  
+# Create within-person centered variables
+  wx1 =~ 1*TV16
+  wx2 =~ 1*TV22
+  wx3 =~ 1*TV26
+  wy1 =~ 1*SMFQ16
+  wy2 =~ 1*SMFQ22
+  wy3 =~ 1*SMFQ25
+  
+# Estimate lagged effects between within-person centered variables
+  wx2 + wy2 ~ wx1 + wy1
+  wx3 + wy3 ~ wx2 + wy2
+  
+# Estimate covariance between within-person centered variables at first wave
+  wx1 ~~ wy1 # Covariance
+
+  # Estimate covariances between residuals of within-person centered variables 
+  # (i.e., innovations)
+  wx2 ~~ wy2
+  wx3 ~~ wy3
+  
+  # Estimate variance and covariance of random intercepts
+  RIx ~~ RIx
+  RIy ~~ RIy
+  RIx ~~ RIy
+
+  # Estimate (residual) variance of within-person centered variables
+  wx1 ~~ wx1 # Variances
+  wy1 ~~ wy1 
+  wx2 ~~ wx2 # Residual variances
+  wy2 ~~ wy2 
+  wx3 ~~ wx3 
+  wy3 ~~ wy3 
+'
