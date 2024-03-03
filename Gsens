@@ -1,0 +1,26 @@
+#Model Gsens
+#set model for Gsens
+#references: https://github.com/JBPG/Gsens/
+#Jessie's codes: https://github.com/jr-baldwin/ACEs_mental_health_RR/blob/main/9_Imputed_analysis_ALSPAC_ABCD_20220131.md#hypothesis-2b
+# c  path
+mh_st<-'
+MH~ST
+MH ~~ MH
+MH ~ 1'
+# a path
+st_pgs<-'ST~pgs_r1 + pgs_r2 + pgs_r3 + pgs_r4 + pgs_r5 + pgs_r6 + pgs_r7 + pgs_r8'
+#b path
+mh_pgs <- '
+# Regression  
+MH ~ pgs_r1 + pgs_r2 + pgs_r3 + pgs_r4 + pgs_r5 + pgs_r6 + pgs_r7 + pgs_r8
+# Variance
+MH ~~ MH
+# Intercept
+MH ~ 1
+'
+#Set model
+M<-gsensY(rxy=mh_st_r$r[mh_st_r$ST],
+       rgx =st_pgs_r$r[st_pgs_r$ST],
+       rgy =mh_pgs_r$r[mh_pgs_r$ST],
+       n=N,
+       h2=h)
